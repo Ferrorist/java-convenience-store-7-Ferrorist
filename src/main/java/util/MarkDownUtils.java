@@ -21,7 +21,7 @@ public class MarkDownUtils {
             System.out.println("[ERROR] 파일을 읽는 도중 에러가 발생했습니다.");
         }
 
-        return null;
+        return new ArrayList<>();
     }
 
     private static List<String> readFile(File file) throws IOException {

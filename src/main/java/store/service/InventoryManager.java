@@ -53,7 +53,6 @@ public class InventoryManager {
         if (promotions == null) {
             promotions = new ArrayList<>();
             List<String> promotionLines = MarkDownUtils.readMarkDownFile(PROMOTIONS_FILE_PATH);
-
             for (String line : promotionLines) {
                 Promotion promotion = PromotionFactory.createPromotion(line);
                 promotions.add(promotion);
