@@ -1,7 +1,11 @@
 package store.view;
 
 public class OutputView {
-    public void printWelcomeMessage() {
+    public static void printWelcomeMessage() {
         System.out.println("안녕하세요. W편의점입니다.");
+    }
+
+    public static void printProducts() {
+        System.out.println("현재 보유하고 있는 상품입니다.");
     }
 }
