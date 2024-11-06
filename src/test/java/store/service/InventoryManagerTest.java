@@ -34,8 +34,10 @@ public class InventoryManagerTest {
     }
 
     @Test
-    void searchPromotionWithNameExceptionTest() {
-
+    void searchPromotionByNameExceptionTest() {
+        Assertions.assertThrows(ClassNotFoundException.class, () -> {
+           inventoryManager.searchPromotionByName(null);
+        });
     }
 
     @BeforeAll
