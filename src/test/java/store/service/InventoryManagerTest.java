@@ -21,6 +21,15 @@ public class InventoryManagerTest {
         );
     }
 
+    @Test
+    void searchPromotionNameTest() {
+        List<Promotion> promotions = inventoryManager.getPromotions();
+
+        for (Promotion promotion : promotions) {
+            Assertions.assertEquals(promotion, inventoryManager.searchPromotion(promotion.getName()));
+        }
+    }
+
     @BeforeAll
     static void beforeAll() {
         inventoryManager = InventoryManager.getInstance();
