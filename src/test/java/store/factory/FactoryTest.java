@@ -8,8 +8,8 @@ public class FactoryTest {
     @Test
     void GeneratePromotionTest() {
         Assertions.assertEquals(
-                new Promotion("A", 1, 2, "B", "C"),
-                PromotionFactory.createPromotion("A, 1, 2, B, C")
+                new Promotion("A", 1, 2, "2000-1-1", "2000-02-01"),
+                PromotionFactory.createPromotion("A, 1, 2, 2000-1-1, 2000-02-01")
                 );
     }
 
