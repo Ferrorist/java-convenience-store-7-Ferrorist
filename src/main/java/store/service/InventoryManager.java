@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import store.factory.ProductFactory;
 import store.factory.PromotionFactory;
 import store.model.Product;
 import store.model.Promotion;
@@ -31,6 +32,7 @@ public class InventoryManager {
     }
 
     public List<Product> getProducts() {
+        initProducts();
         return products;
     }
 
@@ -40,6 +42,7 @@ public class InventoryManager {
     }
 
     public void addProduct (Product product) {
+        initProducts();
         products.add(product);
     }
 
@@ -52,7 +55,7 @@ public class InventoryManager {
     public Promotion searchPromotionByName(String promotionName) {
         initPromotions();
         Promotion promotion = promotionsByNames.getOrDefault(promotionName, null);
-        if(promotion == null)   {
+        if(!(promotionName == null || promotionName.equals("null")) && promotion == null)   {
             System.out.println("[ERROR] 찾을 수 없는 프로모션 입니다.");
         }
         return promotion;
@@ -67,6 +70,17 @@ public class InventoryManager {
                 Promotion promotion = PromotionFactory.createPromotion(line);
                 promotions.add(promotion);
                 promotionsByNames.put(promotion.getName(), promotion);
+            }
+        }
+    }
+
+    private void initProducts() {
+        if (products == null) {
+            products = new ArrayList<>();
+            List<String> productLines = MarkDownUtils.readMarkDownFile(PRODUCTS_FILE_PATH);
+            for (String line : productLines) {
+                Product product = ProductFactory.createProduct(line);
+                products.add(product);
             }
         }
     }

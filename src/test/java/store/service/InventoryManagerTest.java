@@ -5,6 +5,7 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import store.model.Product;
 import store.model.Promotion;
 import util.MarkDownUtils;
 
@@ -37,9 +38,10 @@ public class InventoryManagerTest {
     @Test
     void InitProductsTest() {
         String productFilePath = "src/main/resources/products.md";
+        List<Product> products = inventoryManager.getProducts();
         Assertions.assertEquals(
                 MarkDownUtils.readMarkDownFile(productFilePath).size(),
-                inventoryManager.getProducts().size()
+                products.size()
         );
     }
 
