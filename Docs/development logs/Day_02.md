@@ -7,6 +7,8 @@
 * [md 파일 읽기 기능 구현](./Day_02.md#md-파일-읽기-기능-구현)
 * [프로모션 목록 불러오기](./Day_02.md#프로모션-목록-불러오기)
 * [상품 목록 불러오기](./Day_02.md#상품-목록-불러오기)
+* [재고 목록 출력](./Day_02.md#재고-목록-출력)
+* [문제 상황](./Day_02.md#문제-상황)
 * [현재 진행 상황](./Day_02.md#현재-진행-상황)
 
 <br>
@@ -265,6 +267,87 @@ public class ProductFactory {
 
 <br><br>
 
+## [재고 목록 출력](./Day_02.md#목차)
+
+### Production Code
+```java
+public class OutputView {
+    public static void printProducts() {
+        System.out.println("현재 보유하고 있는 상품입니다.\n");
+        System.out.println(generateProductListString());
+    }
+
+    private static String generateProductListString() {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (Product product : InventoryManager.getInstance().getProducts()) {
+            stringBuilder.append("- ");
+            stringBuilder.append(product.getName()).append(" ");
+            stringBuilder.append(new DecimalFormat("###,###").format(product.getPrice())).append("원 ");
+            stringBuilder.append(product.getQuantitytoString()).append(" ");
+            stringBuilder.append(product.getProductPromotionName()).append("\n");
+        }
+
+        return stringBuilder.toString();
+    }
+}
+```
+
+```java
+public class Product {
+    public String getQuantitytoString() {
+        if(quantity > 0) {
+            return Integer.toString(quantity) + "개";
+        }
+        return "재고 없음";
+    }
+
+    public String getProductPromotionName() {
+        if (productPromotion == null) {
+            return "";
+        }
+        return productPromotion.getName();
+    }
+}
+```
+
+<br><br>
+
+## [문제 상황](./Day_02.md#목차)
+```
+- 콜라 1,000원 10개 탄산2+1
+- 콜라 1,000원 10개 
+- 사이다 1,000원 8개 탄산2+1
+- 사이다 1,000원 7개 
+- 오렌지주스 1,800원 9개 MD추천상품
+- 탄산수 1,200원 5개 탄산2+1
+- 물 500원 10개 
+- 비타민워터 1,500원 6개 
+- 감자칩 1,500원 5개 반짝할인
+- 감자칩 1,500원 5개 
+- 초코바 1,200원 5개 MD추천상품
+- 초코바 1,200원 5개 
+- 에너지바 2,000원 5개 
+- 정식도시락 6,400원 8개 
+- 컵라면 1,700원 1개 MD추천상품
+- 컵라면 1,700원 10개
+```
+
+출력 당시의 문제는 바로 여기이다.
+```
+- 탄산수 1,200원 5개 탄산2+1
+```
+
+해당 재고의 경우 프로모션이 있는 재고는 있지만 그렇지 않은 재고는 0개 이므로 입력받지 않았으므로 출력되지 않는다.<br>
+하지만 입력 받은 재고 중,<br>
+프로모션이 있는 것만 입력받았을 경우 **같은 물품이지만 프로모션이 없는 재고 또한 표현하여야 한다.**<br>
+그러므로 다음과 같이 표현이 되어야 한다는 의미이다.
+```
+- 탄산수 1,200원 5개 탄산2+1
+- 탄산수 1,200원 재고 없음
+```
+
+<br><br>
+
 
 ## [현재 진행 상황](./Day_02.md#목차)
 - [x] 환영 문구 출력 기능 구현
@@ -272,7 +355,7 @@ public class ProductFactory {
 - [x] md 파일 읽기 기능 구현
 - [x] 보유 상품 목록 불러오기
 - [x] 프로모션 목록 불러오기
-- [ ] 상품 목록 출력
+- [x] 상품 목록 출력
 - [ ] 구매 상품 및 수량 입력 안내 출력
     - [ ] 사용자 구매 물품 입력 받기
     - [ ] 올바른 입력값 판단 기능 구현
