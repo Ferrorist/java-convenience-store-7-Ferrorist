@@ -1,4 +1,4 @@
-package store.models;
+package store.model;
 
 public class Promotion {
     private String name;

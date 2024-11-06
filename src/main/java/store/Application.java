@@ -1,6 +1,6 @@
 package store;
 
-import store.views.OutputView;
+import store.view.OutputView;
 
 public class Application {
 

@@ -108,7 +108,7 @@ public class Product {
 ```
 
 ```java
-package store.models;
+package store.model;
 
 public class Promotion {
     private String name;

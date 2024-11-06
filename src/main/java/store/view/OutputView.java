@@ -1,4 +1,4 @@
-package store.views;
+package store.view;
 
 public class OutputView {
     public void printWelcomeMessage() {
