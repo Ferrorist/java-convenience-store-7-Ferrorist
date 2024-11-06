@@ -1,7 +1,9 @@
 package store.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import store.factory.PromotionFactory;
 import store.model.Product;
 import store.model.Promotion;
@@ -13,10 +15,12 @@ public class InventoryManager {
     private static InventoryManager instance;
     private List<Product> products;
     private List<Promotion> promotions;
+    private Map<String, Promotion> promotionsByNames;
 
     private InventoryManager() {
         products = new ArrayList<>();
         promotions = null;
+        promotionsByNames = null;
     }
 
     public static InventoryManager getInstance() {
@@ -31,10 +35,7 @@ public class InventoryManager {
     }
 
     public List<Promotion> getPromotions() {
-        if(promotions == null) {
-            initPromotions();
-        }
-
+        initPromotions();
         return promotions;
     }
 
@@ -43,20 +44,34 @@ public class InventoryManager {
     }
 
     public void addPromotion (Promotion promotion) {
-        if (promotions == null) {
-            initPromotions();
-        }
+        initPromotions();
         promotions.add(promotion);
+        promotionsByNames.put(promotion.getName(), promotion);
+    }
+
+    public Promotion searchPromotionByName(String promotionName) throws ClassNotFoundException {
+        initPromotions();
+        Promotion promotion = promotionsByNames.getOrDefault(promotionName, null);
+        if(promotion == null)   {
+            throw new ClassNotFoundException("[ERROR] 찾을 수 없는 프로모션 입니다.");
+        }
+        return promotion;
     }
 
     private void initPromotions() {
         if (promotions == null) {
             promotions = new ArrayList<>();
+            promotionsByNames = new HashMap<>();
             List<String> promotionLines = MarkDownUtils.readMarkDownFile(PROMOTIONS_FILE_PATH);
             for (String line : promotionLines) {
                 Promotion promotion = PromotionFactory.createPromotion(line);
                 promotions.add(promotion);
+                promotionsByNames.put(promotion.getName(), promotion);
             }
         }
+    }
+
+    private void initProducts() {
+
     }
 }

@@ -18,6 +18,26 @@ public class Promotion {
         this.endDate = endDate;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getBuyQuantity() {
+        return buyQuantity;
+    }
+
+    public int getFreeQuantity() {
+        return freeQuantity;
+    }
+
+    public String getStartDate() {
+        return startDate;
+    }
+
+    public String getEndDate() {
+        return endDate;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

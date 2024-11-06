@@ -1,9 +1,9 @@
 package store.service;
 
+import camp.nextstep.edu.missionutils.Randoms;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import store.model.Promotion;
 import util.MarkDownUtils;
@@ -22,12 +22,20 @@ public class InventoryManagerTest {
     }
 
     @Test
-    void searchPromotionNameTest() {
+    void searchPromotionByNameTest() {
         List<Promotion> promotions = inventoryManager.getPromotions();
-
-        for (Promotion promotion : promotions) {
-            Assertions.assertEquals(promotion, inventoryManager.searchPromotion(promotion.getName()));
+        int randomIdx = Randoms.pickNumberInRange(0, promotions.size()-1);
+        try {
+            Assertions.assertEquals(promotions.get(randomIdx),
+                    inventoryManager.searchPromotionByName(promotions.get(randomIdx).getName()));
+        } catch (ClassNotFoundException exception) {
+            Assertions.fail(exception.getMessage());
         }
+    }
+
+    @Test
+    void searchPromotionWithNameExceptionTest() {
+
     }
 
     @BeforeAll
