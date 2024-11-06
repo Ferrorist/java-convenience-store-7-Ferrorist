@@ -2,7 +2,7 @@ package store.model;
 
 import java.util.Objects;
 
-public class Product {
+public class Product implements Comparable<Product> {
     private final String name;
     private final int price;
     private int quantity;
@@ -64,6 +64,26 @@ public class Product {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, price, quantity, productPromotion);
+        return Objects.hash(name, price, productPromotion);
+    }
+
+
+    @Override
+    public int compareTo(Product o) {
+        if (this.name.equals(o.name)) {
+            return Integer.compare(this.calcPriority(), o.calcPriority());
+        }
+        return this.name.compareTo(o.name);
+    }
+
+    private int calcPriority() {
+        int priority = 2;
+        if(this.productPromotion != null) {
+            priority = 1;
+        }
+        if(this.quantity <= 0) {
+            priority += 2;
+        }
+        return priority;
     }
 }
