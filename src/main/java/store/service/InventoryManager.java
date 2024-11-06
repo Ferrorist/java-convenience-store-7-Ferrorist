@@ -18,7 +18,7 @@ public class InventoryManager {
     private Map<String, Promotion> promotionsByNames;
 
     private InventoryManager() {
-        products = new ArrayList<>();
+        products = null;
         promotions = null;
         promotionsByNames = null;
     }
@@ -49,11 +49,11 @@ public class InventoryManager {
         promotionsByNames.put(promotion.getName(), promotion);
     }
 
-    public Promotion searchPromotionByName(String promotionName) throws ClassNotFoundException {
+    public Promotion searchPromotionByName(String promotionName) {
         initPromotions();
         Promotion promotion = promotionsByNames.getOrDefault(promotionName, null);
         if(promotion == null)   {
-            throw new ClassNotFoundException("[ERROR] 찾을 수 없는 프로모션 입니다.");
+            System.out.println("[ERROR] 찾을 수 없는 프로모션 입니다.");
         }
         return promotion;
     }
@@ -69,9 +69,5 @@ public class InventoryManager {
                 promotionsByNames.put(promotion.getName(), promotion);
             }
         }
-    }
-
-    private void initProducts() {
-
     }
 }

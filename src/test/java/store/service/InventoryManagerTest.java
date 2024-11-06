@@ -25,19 +25,13 @@ public class InventoryManagerTest {
     void searchPromotionByNameTest() {
         List<Promotion> promotions = inventoryManager.getPromotions();
         int randomIdx = Randoms.pickNumberInRange(0, promotions.size()-1);
-        try {
-            Assertions.assertEquals(promotions.get(randomIdx),
+        Assertions.assertEquals(promotions.get(randomIdx),
                     inventoryManager.searchPromotionByName(promotions.get(randomIdx).getName()));
-        } catch (ClassNotFoundException exception) {
-            Assertions.fail(exception.getMessage());
-        }
     }
 
     @Test
     void searchPromotionByNameExceptionTest() {
-        Assertions.assertThrows(ClassNotFoundException.class, () -> {
-           inventoryManager.searchPromotionByName(null);
-        });
+        Assertions.assertNull(inventoryManager.searchPromotionByName(null));
     }
 
     @BeforeAll
