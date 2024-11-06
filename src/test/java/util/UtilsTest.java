@@ -16,7 +16,12 @@ public class UtilsTest {
     }
 
     @Test
-    void StringSplitTest() {
-        Assertions.assertEquals(List.of("name", "buy", "get"), Arrays.asList(StringUtils.splitLine("  name, buy  ,get     ")));
+    void StringSplitListTest() {
+        Assertions.assertEquals(List.of("name", "buy", "get"), StringUtils.splitLineToList("name     ,    buy    ,get      "));
+    }
+
+    @Test
+    void StringSplitArrayTest() {
+        Assertions.assertArrayEquals(new String[]{"name", "buy", "get"}, StringUtils.splitLinetoArray("name     ,    buy    ,get      "));
     }
 }
