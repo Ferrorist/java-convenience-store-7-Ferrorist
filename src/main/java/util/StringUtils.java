@@ -1,6 +1,7 @@
 package util;
 
 import java.util.List;
+import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
 public class StringUtils {
@@ -19,5 +20,9 @@ public class StringUtils {
         return Stream.of(line.split(","))
                 .map(String::strip)
                 .toList();
+    }
+
+    public static boolean checkDatePattern(String date) {
+        return Pattern.matches("^\\d{4}-\\d{2}-\\d{2}$", date);
     }
 }
