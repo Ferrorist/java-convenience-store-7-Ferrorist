@@ -35,7 +35,7 @@ public class InventoryManagerTest {
     }
 
     @Test
-    void InitProductTest() {
+    void InitProductsTest() {
         String productFilePath = "src/main/resources/products.md";
         Assertions.assertEquals(
                 MarkDownUtils.readMarkDownFile(productFilePath).size(),
