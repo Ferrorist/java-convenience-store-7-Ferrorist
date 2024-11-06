@@ -34,6 +34,15 @@ public class InventoryManagerTest {
         Assertions.assertNull(inventoryManager.searchPromotionByName(null));
     }
 
+    @Test
+    void InitProductTest() {
+        String productFilePath = "src/main/resources/products.md";
+        Assertions.assertEquals(
+                MarkDownUtils.readMarkDownFile(productFilePath).size(),
+                inventoryManager.getProducts().size()
+        );
+    }
+
     @BeforeAll
     static void beforeAll() {
         inventoryManager = InventoryManager.getInstance();
