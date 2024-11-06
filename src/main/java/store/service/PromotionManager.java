@@ -4,52 +4,33 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import store.factory.ProductFactory;
 import store.factory.PromotionFactory;
-import store.model.Product;
 import store.model.Promotion;
 import util.MarkDownUtils;
 
-public class InventoryManager {
+public class PromotionManager {
+
     private static final String PROMOTIONS_FILE_PATH = "src/main/resources/promotions.md";
-    private static final String PRODUCTS_FILE_PATH = "src/main/resources/products.md";
-    private static InventoryManager instance;
-    private List<Product> products;
+    private static PromotionManager instance;
+
     private List<Promotion> promotions;
     private Map<String, Promotion> promotionsByNames;
 
-    private InventoryManager() {
-        products = null;
+    private PromotionManager() {
         promotions = null;
         promotionsByNames = null;
     }
 
-    public static InventoryManager getInstance() {
+    public static PromotionManager getInstance() {
         if (instance == null) {
-            instance = new InventoryManager();
+            instance = new PromotionManager();
         }
         return instance;
-    }
-
-    public List<Product> getProducts() {
-        initProducts();
-        return products;
     }
 
     public List<Promotion> getPromotions() {
         initPromotions();
         return promotions;
-    }
-
-    public void addProduct (Product product) {
-        initProducts();
-        products.add(product);
-    }
-
-    public void addPromotion (Promotion promotion) {
-        initPromotions();
-        promotions.add(promotion);
-        promotionsByNames.put(promotion.getName(), promotion);
     }
 
     public Promotion searchPromotionByName(String promotionName) {
@@ -70,17 +51,6 @@ public class InventoryManager {
                 Promotion promotion = PromotionFactory.createPromotion(line);
                 promotions.add(promotion);
                 promotionsByNames.put(promotion.getName(), promotion);
-            }
-        }
-    }
-
-    private void initProducts() {
-        if (products == null) {
-            products = new ArrayList<>();
-            List<String> productLines = MarkDownUtils.readMarkDownFile(PRODUCTS_FILE_PATH);
-            for (String line : productLines) {
-                Product product = ProductFactory.createProduct(line);
-                products.add(product);
             }
         }
     }

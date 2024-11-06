@@ -1,18 +1,19 @@
 package store.factory;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import store.model.Product;
 import store.model.Promotion;
-import store.service.InventoryManager;
+import store.service.PromotionManager;
 
 public class ProductFactoryTest {
 
-    private static final InventoryManager inventoryManager = InventoryManager.getInstance();
+    private static PromotionManager promotionManager;
 
     @Test
     void GenerateProductTest() {
-        Promotion promotion = inventoryManager.searchPromotionByName("탄산2+1");
+        Promotion promotion = promotionManager.searchPromotionByName("탄산2+1");
         Assertions.assertEquals(new Product("콜라", 1000, 10, promotion), ProductFactory.createProduct("콜라,1000,10,탄산2+1"));
     }
 
@@ -23,4 +24,8 @@ public class ProductFactoryTest {
         });
     }
 
+    @BeforeAll
+    static void beforeAll() {
+        promotionManager = PromotionManager.getInstance();
+    }
 }

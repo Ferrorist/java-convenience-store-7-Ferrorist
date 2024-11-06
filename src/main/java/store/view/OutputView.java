@@ -2,7 +2,7 @@ package store.view;
 
 import java.text.DecimalFormat;
 import store.model.Product;
-import store.service.InventoryManager;
+import store.service.ProductManager;
 
 public class OutputView {
     public static void printWelcomeMessage() {
@@ -16,7 +16,7 @@ public class OutputView {
 
     private static String generateProductListString() {
         StringBuilder stringBuilder = new StringBuilder();
-        for (Product product : InventoryManager.getInstance().getProducts()) {
+        for (Product product : ProductManager.getInstance().getProducts()) {
             stringBuilder.append("- ");
             stringBuilder.append(product.getName()).append(" ");
             stringBuilder.append(new DecimalFormat("###,###").format(product.getPrice())).append("원 ");

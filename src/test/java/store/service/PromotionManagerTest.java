@@ -5,48 +5,37 @@ import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import store.model.Product;
 import store.model.Promotion;
 import util.MarkDownUtils;
 
-public class InventoryManagerTest {
+public class PromotionManagerTest {
 
-    private static InventoryManager inventoryManager;
+    private static PromotionManager promotionManager;
 
     @Test
     void InitPromotionTest() {
         String promotionFilePath = "src/main/resources/promotions.md";
         Assertions.assertEquals(
                 MarkDownUtils.readMarkDownFile(promotionFilePath).size(),
-                inventoryManager.getPromotions().size()
+                promotionManager.getPromotions().size()
         );
     }
 
     @Test
     void searchPromotionByNameTest() {
-        List<Promotion> promotions = inventoryManager.getPromotions();
+        List<Promotion> promotions = promotionManager.getPromotions();
         int randomIdx = Randoms.pickNumberInRange(0, promotions.size()-1);
         Assertions.assertEquals(promotions.get(randomIdx),
-                    inventoryManager.searchPromotionByName(promotions.get(randomIdx).getName()));
+                promotionManager.searchPromotionByName(promotions.get(randomIdx).getName()));
     }
 
     @Test
     void searchPromotionByNameExceptionTest() {
-        Assertions.assertNull(inventoryManager.searchPromotionByName(null));
-    }
-
-    @Test
-    void InitProductsTest() {
-        String productFilePath = "src/main/resources/products.md";
-        List<Product> products = inventoryManager.getProducts();
-        Assertions.assertEquals(
-                MarkDownUtils.readMarkDownFile(productFilePath).size(),
-                products.size()
-        );
+        Assertions.assertNull(promotionManager.searchPromotionByName(null));
     }
 
     @BeforeAll
     static void beforeAll() {
-        inventoryManager = InventoryManager.getInstance();
+        promotionManager = PromotionManager.getInstance();
     }
 }
