@@ -16,6 +16,36 @@ public class Product {
         this.productPromotion = productPromotion;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public String getQuantitytoString() {
+        if(quantity > 0) {
+            return Integer.toString(quantity) + "개";
+        }
+        return "재고 없음";
+    }
+
+    public Promotion getProductPromotion() {
+        return productPromotion;
+    }
+
+    public String getProductPromotionName() {
+        if (productPromotion == null) {
+            return "";
+        }
+        return productPromotion.getName();
+    }
+
     public void setQuantity(int quantity) {
         this.quantity = quantity;
     }
