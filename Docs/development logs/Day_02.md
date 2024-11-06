@@ -9,6 +9,8 @@
 * [상품 목록 불러오기](./Day_02.md#상품-목록-불러오기)
 * [재고 목록 출력](./Day_02.md#재고-목록-출력)
 * [문제 상황](./Day_02.md#문제-상황)
+    * [문제 해결](./Day_02.md#문제-해결)
+* [코드 리팩토링](./Day_02.md#코드-리팩토링)
 * [현재 진행 상황](./Day_02.md#현재-진행-상황)
 
 <br>
@@ -346,8 +348,111 @@ public class Product {
 - 탄산수 1,200원 재고 없음
 ```
 
+<br>
+
+### [문제 해결](./Day_02.md#목차)
+
+0. Product를 관리하는 자료구조의 변경
+```java
+private Map<String, List<Product>> productsByName;  // Product 객체를 담는 HashMap
+private Map<String, Integer> stockByName;           // 물품의 개수를 저장하는 HashMap
+```
+
+1. 입력된 적이 없는 물품의 경우, 프로모션이 없는 Product을 생성하여 List에 넣기.
+```java
+    List<Product> products = productsByName.getOrDefault(product.getName(), new ArrayList<>());
+    if(products.isEmpty()) {
+        products.add(new Product(product.getName(), product.getPrice(), 0, null));
+    }
+```
+
+2. 이미 입력된 적이 있는 물품의 경우, 물품 개수 추가하기
+```java
+if(!insertProductToList(products, product)) {
+            products.add(product);
+}
+
+private void registerProductStock(Product product) {
+        int quantity = stockByName.getOrDefault(product.getName(), 0);
+        stockByName.put(product.getName(), quantity + product.getQuantity());
+}
+```
+
+3. Map의 Entry를 통해 재고 List 생성
+```java
+private List<Product> generateProductList() {
+    List<Product> products = new ArrayList<>();
+    for(Map.Entry<String, List<Product>> entry : productsByName.entrySet()) {
+        products.addAll(entry.getValue());
+    }
+    Collections.sort(products);
+    return products;
+}
+```
+
+#### 최종 코드
+```java
+private void initProducts() {
+    if (productsByName == null) {
+        productsByName = new HashMap<>();
+        stockByName = new HashMap<>();
+        List<String> productLines = MarkDownUtils.readMarkDownFile(PRODUCTS_FILE_PATH);
+        for (String line : productLines) {
+            Product product = ProductFactory.createProduct(line);
+            applyProduct(product);
+        }
+    }
+}
+
+private void applyProduct(Product product) {
+    if (productsByName != null && stockByName != null) {
+        registerProduct(product);
+        registerProductStock(product);
+    }
+}
+
+private void registerProduct(Product product) {
+    List<Product> products = productsByName.getOrDefault(product.getName(), new ArrayList<>());
+    if(products.isEmpty()) {
+        products.add(new Product(product.getName(), product.getPrice(), 0, null));
+    }
+    if(!insertProductToList(products, product)) {
+        products.add(product);
+    }
+    productsByName.put(product.getName(), products);
+}
+
+private boolean insertProductToList(List<Product> products, Product product) {
+    for (Product value : products) {
+        if (value.equals(product)) {
+            int quantity = value.getQuantity() + product.getQuantity();
+            value.setQuantity(quantity);
+            return true;
+        }
+    }
+    return false;
+}
+
+private void registerProductStock(Product product) {
+    int quantity = stockByName.getOrDefault(product.getName(), 0);
+    stockByName.put(product.getName(), quantity + product.getQuantity());
+}
+
+private List<Product> generateProductList() {
+    List<Product> products = new ArrayList<>();
+    for(Map.Entry<String, List<Product>> entry : productsByName.entrySet()) {
+        products.addAll(entry.getValue());
+    }
+    Collections.sort(products);
+    return products;
+}
+```
 <br><br>
 
+## [코드 리팩토링](./Day_02.md#목차)
+
+Product와 Promotion을 관리하는 ```InventoryManager```가 많은 기능을 갖기 시작하여 이를 분리하였다.
+```ProductManager```와 ```PromotionManager```으로 나누는 작업을 수행했다.
 
 ## [현재 진행 상황](./Day_02.md#목차)
 - [x] 환영 문구 출력 기능 구현
