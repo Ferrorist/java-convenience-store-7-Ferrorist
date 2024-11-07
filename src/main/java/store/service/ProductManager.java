@@ -29,9 +29,19 @@ public class ProductManager {
         return instance;
     }
 
+    public List<Product> getProductByName(String productName) {
+        initProducts();
+        return productsByName.getOrDefault(productName, null);
+    }
+
     public List<Product> getProducts() {
         initProducts();
         return generateProductList();
+    }
+
+    public int getProductStockByName(String productName) {
+        initProducts();
+        return stockByName.getOrDefault(productName, 0);
     }
 
     private void initProducts() {
@@ -88,5 +98,6 @@ public class ProductManager {
         Collections.sort(products);
         return products;
     }
+
 
 }
