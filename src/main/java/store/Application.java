@@ -1,10 +1,13 @@
 package store;
 
 import java.util.function.Supplier;
+import store.controller.PurchaseController;
 import store.view.InputView;
 import store.view.OutputView;
 
 public class Application {
+
+    private static PurchaseController purchaseController = new PurchaseController();
 
     public static void main(String[] args) {
         startProgram();
@@ -24,6 +27,7 @@ public class Application {
         executeUntilNoException(() -> {
             OutputView.printRequestPurchaseMesssage();
             String input = InputView.inputPurchaseProducts();
+            purchaseController.validatePurchaseRequest(input);
             return null;
         });
     }
