@@ -5,50 +5,24 @@ import java.util.Arrays;
 import java.util.List;
 import store.enums.ErrorCode;
 import store.model.dto.PurchaseRequest;
+import util.InputCheckerUtils;
 import util.StringUtils;
 
 public class PurchaseService {
 
     private static final ProductManager productManager = ProductManager.getInstance();
 
-    public boolean validatePurchaseRequest(String input) throws NumberFormatException, IllegalArgumentException {
-        if (!checkInputFormat(input)) {
+    public boolean validatePurchaseRequest(String input) throws IllegalArgumentException {
+        if (!InputCheckerUtils.checkPurchaseRequestInputFormat(input)) {
             throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
         }
         String[] inputValues = StringUtils.splitLinetoArray(input);
         for (String value : inputValues) {
-            checkPurchaseRequestFormat(value);
+            InputCheckerUtils.checkPurchaseRequestFormat(value);
         }
 
         return true;
     }
-
-    private boolean checkInputFormat(String input) {
-        char[] searchChars = {',', '[', ']'};
-        int[] charCounts = {0, 0, 0};
-
-        for (char inputChar : input.toCharArray()) {
-            int idx = Arrays.binarySearch(searchChars, inputChar);
-            if(idx >= 0)    {
-                charCounts[idx]++;
-            }
-        }
-        return (charCounts[0] + 1) == charCounts[1] && charCounts[1] == charCounts[2];
-    }
-
-    private void checkPurchaseRequestFormat(String input)  {
-        if (!(input.startsWith("[") && input.endsWith("]") && input.contains("-"))) {
-            throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
-        }
-        String[] values = input.substring(1, input.length() - 1).split("-");
-        if(values.length != 2) {
-            throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
-        }
-        if(StringUtils.checkAndparseInt(values[1]) <= 0) {
-            throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
-        }
-    }
-
 
 
     public List<PurchaseRequest> getPurchaseRequests(String input) throws IllegalArgumentException {

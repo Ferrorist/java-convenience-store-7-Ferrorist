@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 public class StringUtils {
 
+    public static final String SPECIAL_CHAR_REGEX = "[^a-zA-Z0-9가-힣ㄱ-ㅎㅏ-ㅣ\\s]";
     public static String[] splitLinetoArray(String line) {
         String[] values = line.split(",");
 
@@ -32,5 +33,9 @@ public class StringUtils {
         } catch (NumberFormatException exception) {
             throw new NumberFormatException("[ERROR] 올바르지 않는 입력값입니다.");
         }
+    }
+
+    public static boolean checkSpecialChar(char input) {
+        return Pattern.matches(SPECIAL_CHAR_REGEX, Character.toString(input));
     }
 }
