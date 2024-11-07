@@ -24,7 +24,38 @@ public record PurchaseRequest(String productName, int quantity) { }
 
 ### Production Code
 ```java
+public static boolean checkPurchaseRequestInputFormat(String input) throws IllegalArgumentException {
+    char[] searchChars = {',', '[', ']'};
+    int[] charCounts = countChars(input, searchChars);
+    return (charCounts[0] + 1) == charCounts[1] && charCounts[1] == charCounts[2];
+}
 
+private static int[] countChars(String input, char[] searchChars) {
+    int[] charCounts = {0, 0, 0};
+    for (char inputChar : input.toCharArray()) {
+        int idx = Arrays.binarySearch(searchChars, inputChar);
+        if (StringUtils.checkSpecialChar(inputChar) && idx < 0) {
+            throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
+        }
+        if (idx >= 0) {
+            charCounts[idx]++;
+        }
+    }
+    return charCounts;
+}
+
+public static void checkPurchaseRequestFormat(String input)  {
+    if (!(input.startsWith("[") && input.endsWith("]") && input.contains("-"))) {
+        throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
+    }
+    String[] values = input.substring(1, input.length() - 1).split("-");
+    if(values.length != 2) {
+        throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
+    }
+    if(StringUtils.checkAndparseInt(values[1]) <= 0) {
+        throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
+    }
+}
 ```
 
 <br>
@@ -87,6 +118,17 @@ void validatePurchaseRequestExceptionTest(String input) {
 
 ### Production Code
 ```java
+private PurchaseRequest generatePurchaseRequest(String inputRequest) {
+    String[] inputValue = inputRequest.substring(1, inputRequest.length() - 1).split("-");
+    if (productManager.getProductByName(inputValue[0]) == null) {
+        throw new IllegalArgumentException(ErrorCode.NOT_FOUND_PRODUCT.getMessage());
+    }
+    int requestQuantity = Integer.parseInt(inputValue[1]);
+    if (requestQuantity > productManager.getProductStockByName(inputValue[0])) {
+        throw new IllegalArgumentException(ErrorCode.EXCEED_REQUEST_QUANTITY.getMessage());
+    }
+    return new PurchaseRequest(inputValue[0], requestQuantity);
+}
 ```
 
 <br>
@@ -121,25 +163,10 @@ void checkProductStocksExceptionTest() {
     - [x] 사용자 구매 물품 입력 받기
     - [x] 올바른 입력값 판단 기능 구현
     - [x] 재고 물품 및 구매 물품 개수 비교
-- [ ] 구매 물품 리스트 생성
+- [x] 구매 물품 리스트 생성
 - [ ] 구매 물품 프로모션 적용 기능 구현
 - [ ] 멤버십 할인 기능 구현
 - [ ] 금액 계산 기능 구현
 - [ ] 영수증 기능 구현
 - [ ] 각 기능 에러 호출 시 반복 수행 기능 구현
 - [ ] 재구매 여부 체크
-
-
-
-
-
-
-### Production Code
-```java
-```
-
-<br>
-
-### Test Code
-```java
-```
