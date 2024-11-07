@@ -1,7 +1,9 @@
 package store;
 
+import java.util.List;
 import java.util.function.Supplier;
 import store.controller.PurchaseController;
+import store.model.dto.PurchaseRequest;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -28,6 +30,7 @@ public class Application {
             OutputView.printRequestPurchaseMesssage();
             String input = InputView.inputPurchaseProducts();
             purchaseController.validatePurchaseRequest(input);
+            List<PurchaseRequest> requests = purchaseController.getPurchaseRequests(input);
             return null;
         });
     }
