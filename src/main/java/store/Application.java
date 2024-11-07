@@ -9,7 +9,7 @@ import store.view.OutputView;
 
 public class Application {
 
-    private static PurchaseController purchaseController = new PurchaseController();
+    private static final PurchaseController purchaseController = new PurchaseController();
 
     public static void main(String[] args) {
         startProgram();
@@ -20,29 +20,37 @@ public class Application {
         OutputView.printWelcomeMessage();
     }
 
-    private static void progressConvenienceStore() {
+    private static Void progressConvenienceStore() {
         OutputView.printProducts();
-        progressPurchase();
-    }
-
-    private static void progressPurchase() {
-        executeUntilNoException(() -> {
-            OutputView.printRequestPurchaseMesssage();
-            String input = InputView.inputPurchaseProducts();
-            purchaseController.validatePurchaseRequest(input);
-            List<PurchaseRequest> requests = purchaseController.getPurchaseRequests(input);
+        return executeUntilNoException(() -> {
+            List<PurchaseRequest> requests = progressPurchase();
+            purchaseController.progressPayment(requests);
             return null;
         });
     }
 
-    private static void executeUntilNoException(Supplier<?> supplier) {
+    private static List<PurchaseRequest> progressPurchase() {
+        return executeUntilNoException(() -> {
+            String input = InputView.printRequestPurchaseMessage();
+            purchaseController.validatePurchaseRequest(input);
+            return purchaseController.getPurchaseRequests(input);
+        });
+    }
+
+    private static <T> T executeUntilNoException(Supplier<T> supplier) {
         while (true) {
             try {
-                supplier.get();
-                return;
+                return supplier.get();
             } catch (Exception exception) {
                 System.out.println(exception.getMessage());
             }
         }
+    }
+
+    private static void progressPayment(List<PurchaseRequest> requests) {
+        executeUntilNoException(() -> {
+
+            return null;
+        });
     }
 }

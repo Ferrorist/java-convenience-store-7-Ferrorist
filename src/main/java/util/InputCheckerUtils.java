@@ -1,5 +1,6 @@
 package util;
 
+import camp.nextstep.edu.missionutils.Console;
 import java.util.Arrays;
 import store.enums.ErrorCode;
 
@@ -15,7 +16,7 @@ public class InputCheckerUtils {
         int[] charCounts = {0, 0, 0};
         for (char inputChar : input.toCharArray()) {
             int idx = Arrays.binarySearch(searchChars, inputChar);
-            if (StringUtils.checkSpecialChar(inputChar) && idx < 0) {
+            if (inputChar != '-' && StringUtils.checkSpecialChar(inputChar) && idx < 0) {
                 throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
             }
             if (idx >= 0) {
@@ -35,6 +36,19 @@ public class InputCheckerUtils {
         }
         if(StringUtils.checkAndparseInt(values[1]) <= 0) {
             throw new IllegalArgumentException(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
+        }
+    }
+
+    public static boolean checkAnswerYesOrNo() {
+        while (true) {
+            String input = Console.readLine();
+            if (input.equals("Y") || input.equals("y")) {
+                return true;
+            }
+            if (input.equals("N") || input.equals("n")) {
+                return false;
+            }
+            System.out.println(ErrorCode.NOT_SUPPORT_REQUEST_FORMAT.getMessage());
         }
     }
 }

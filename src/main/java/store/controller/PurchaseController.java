@@ -7,11 +7,15 @@ import store.service.PurchaseService;
 public class PurchaseController {
 
     private final PurchaseService purchaseService = new PurchaseService();
-    public boolean validatePurchaseRequest(String input) throws IllegalArgumentException {
-        return purchaseService.validatePurchaseRequest(input);
+    public void validatePurchaseRequest(String input) throws IllegalArgumentException {
+        purchaseService.validatePurchaseRequest(input);
     }
 
     public List<PurchaseRequest> getPurchaseRequests(String input) throws IllegalArgumentException {
         return purchaseService.getPurchaseRequests(input);
+    }
+
+    public void progressPayment(List<PurchaseRequest> requests) throws RuntimeException {
+        purchaseService.progressPayment(requests);
     }
 }
