@@ -3,6 +3,8 @@ package store.service;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvFileSource;
 
 public class PurchaseServiceTest {
 
@@ -13,19 +15,31 @@ public class PurchaseServiceTest {
     }
 
     @Test
-    void validatePurchaseRequestFalseTest() {
-        Assertions.assertFalse(purchaseService.validatePurchaseRequest("{사이다-3}, [물2]"));
+    void validatePurchaseRequestExceptionSingleTest() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+           purchaseService.validatePurchaseRequest("[사이다3][물-2]");
+        });
+    }
+
+    @ParameterizedTest
+    @CsvFileSource(resources = "/validatePurchaseRequestExceptionTestFile.csv")
+    void validatePurchaseRequestExceptionTest(String input) {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            purchaseService.validatePurchaseRequest(input);
+        });
     }
 
     @Test
     void checkProductStocksTest() {
-        Assertions.assertTrue(purchaseService.checkProductStocks("[사이다-3]"));
+        Assertions.assertDoesNotThrow(() -> {
+            purchaseService.getPurchaseRequests("[사이다-3]");
+        });
     }
 
     @Test
     void checkProductStocksExceptionTest() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
-           purchaseService.checkProductStocks("[컵라면-100]");
+           purchaseService.getPurchaseRequests("[컵라면-100]");
         });
     }
 
