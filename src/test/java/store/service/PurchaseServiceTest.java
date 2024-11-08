@@ -6,9 +6,9 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
-import store.model.dto.PaymentResponse;
-import store.model.dto.PurchaseRequest;
-import store.model.dto.PurchaseResponse;
+import store.model.dto.response.PaymentPriceResponse;
+import store.model.dto.request.PurchaseRequest;
+import store.model.dto.response.PurchaseResponse;
 
 public class PurchaseServiceTest {
 
@@ -59,7 +59,7 @@ public class PurchaseServiceTest {
     void PaymentResponseTest() {
         List<PurchaseRequest> requests = purchaseService.getPurchaseRequests("[사이다-3]");
         List<PurchaseResponse> responses = purchaseService.progressPayment(requests);
-        Assertions.assertTrue(PaymentResponse.class instanceof purchaseService.generatePaymentResponse(responses));
+        Assertions.assertTrue(purchaseService.generatePaymentPriceResponse(responses) instanceof PaymentPriceResponse);
     }
 
     @BeforeAll

@@ -1,5 +1,6 @@
 package util;
 
+import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -37,5 +38,9 @@ public class StringUtils {
 
     public static boolean checkSpecialChar(char input) {
         return Pattern.matches(SPECIAL_CHAR_REGEX, Character.toString(input));
+    }
+
+    public static String convertToDecimalFormat(int amount) {
+        return new DecimalFormat("###,###").format(amount);
     }
 }

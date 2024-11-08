@@ -3,8 +3,11 @@ package store;
 import java.util.List;
 import java.util.function.Supplier;
 import store.controller.PurchaseController;
-import store.model.dto.PurchaseRequest;
-import store.model.dto.PurchaseResponse;
+import store.model.dto.response.PaymentFreeResponse;
+import store.model.dto.response.PaymentPriceResponse;
+import store.model.dto.request.PurchaseRequest;
+import store.model.dto.response.PaymentProductResponse;
+import store.model.dto.response.PurchaseResponse;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -26,7 +29,10 @@ public class Application {
         return executeUntilNoException(() -> {
             List<PurchaseRequest> requests = progressPurchase();
             List<PurchaseResponse> responses = purchaseController.progressPayment(requests);
-
+            List<PaymentProductResponse> paymentProductResponses = purchaseController.generatePaymentProductResponses(responses);
+            List<PaymentFreeResponse> paymentFreeResponses = purchaseController.generatePaymentFreeResponses(responses);
+            PaymentPriceResponse paymentPriceResponse = purchaseController.generatePaymentPriceResponse(responses);
+            OutputView.printPaymentResult(paymentProductResponses, paymentFreeResponses, paymentPriceResponse);
             return null;
         });
     }

@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import store.factory.ProductFactory;
 import store.model.Product;
+import store.model.dto.response.PurchaseResponse;
 import util.MarkDownUtils;
 
 public class ProductManager {
@@ -99,5 +100,13 @@ public class ProductManager {
         return products;
     }
 
+    public void updateProductsStock(List<PurchaseResponse> responses) {
+        for (PurchaseResponse response : responses) {
+            Product responseProduct = response.getProduct();
+            responseProduct.setQuantity(responseProduct.getQuantity() - response.getTotalQuantity());
+            stockByName.put(responseProduct.getName(),
+                    stockByName.get(responseProduct.getName()) - response.getTotalQuantity());
+        }
+    }
 
 }

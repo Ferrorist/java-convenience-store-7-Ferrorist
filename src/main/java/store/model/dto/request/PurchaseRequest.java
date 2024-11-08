@@ -1,4 +1,4 @@
-package store.model.dto;
+package store.model.dto.request;
 
 public class PurchaseRequest {
     private String productName;

@@ -1,4 +1,4 @@
-package store.model.dto;
+package store.model.dto.response;
 
 import store.model.Product;
 
