@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import store.controller.PurchaseController;
 import store.model.dto.PurchaseRequest;
+import store.model.dto.PurchaseResponse;
 import store.view.InputView;
 import store.view.OutputView;
 
@@ -24,7 +25,8 @@ public class Application {
         OutputView.printProducts();
         return executeUntilNoException(() -> {
             List<PurchaseRequest> requests = progressPurchase();
-            purchaseController.progressPayment(requests);
+            List<PurchaseResponse> responses = purchaseController.progressPayment(requests);
+
             return null;
         });
     }

@@ -1,7 +1,9 @@
 package store.controller;
 
 import java.util.List;
+import store.model.dto.PaymentResponse;
 import store.model.dto.PurchaseRequest;
+import store.model.dto.PurchaseResponse;
 import store.service.PurchaseService;
 
 public class PurchaseController {
@@ -15,7 +17,7 @@ public class PurchaseController {
         return purchaseService.getPurchaseRequests(input);
     }
 
-    public void progressPayment(List<PurchaseRequest> requests) throws RuntimeException {
-        purchaseService.progressPayment(requests);
+    public List<PurchaseResponse> progressPayment(List<PurchaseRequest> requests) throws RuntimeException {
+        return purchaseService.progressPayment(requests);
     }
 }

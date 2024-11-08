@@ -46,4 +46,14 @@ public class PurchaseResponse {
     public void setNotApplyPromotionQuantity(int notApplyPromotionQuantity) {
         this.notApplyPromotionQuantity = notApplyPromotionQuantity;
     }
+
+    @Override
+    public String toString() {
+        return "PurchaseResponse{" +
+                "product=" + product +
+                ", totalQuantity=" + totalQuantity +
+                ", freeQuantity=" + freeQuantity +
+                ", notApplyPromotionQuantity=" + notApplyPromotionQuantity +
+                '}';
+    }
 }

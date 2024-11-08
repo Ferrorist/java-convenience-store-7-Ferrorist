@@ -57,7 +57,7 @@ public class PurchaseService {
         for (PurchaseRequest request : requests) {
             validateRequestStocks(request);
             List<Product> products = getSortedProducts(request.getProductName());
-            responses.add(generatePurchaseResponse(products, request.getQuantity()));
+            responses.addAll(generatePurchaseResponse(products, request.getQuantity()));
         }
 
         return responses;
@@ -78,21 +78,23 @@ public class PurchaseService {
         return products;
     }
 
-    private PurchaseResponse generatePurchaseResponse(List<Product> products, int requestQuantity) throws RuntimeException {
+    private List<PurchaseResponse> generatePurchaseResponse(List<Product> products, int requestQuantity) throws RuntimeException {
         Promotion productPromotion = products.getFirst().getProductPromotion();
         if (productPromotion == null) {
-            return new PurchaseResponse(products.getFirst(), requestQuantity, 0, 0);
+            return List.of(new PurchaseResponse(products.getFirst(), requestQuantity, 0, 0));
         }
+        List<PurchaseResponse> responses = new ArrayList<>();
         int applyPromotionQuantity = Math.min(products.getFirst().getQuantity(), requestQuantity);
         PurchaseResponse currentResponse = calcApplyPromotionQuantity(products.getFirst(), productPromotion, applyPromotionQuantity);
+        responses.add(currentResponse);
         if (requestQuantity != applyPromotionQuantity) {
-            int notApplyPromotionQuantity = currentResponse.getNotApplyPromotionQuantity();
-            notApplyPromotionQuantity += (requestQuantity - applyPromotionQuantity);
-            currentResponse.setNotApplyPromotionQuantity(notApplyPromotionQuantity);
+            int notApplyPromotionQuantity = requestQuantity - applyPromotionQuantity;
+            PurchaseResponse noPromotionResponse = new PurchaseResponse(products.get(1), notApplyPromotionQuantity, 0, notApplyPromotionQuantity);
+            responses.add(noPromotionResponse);
         }
 
-        checkContinuePurchase(currentResponse);
-        return currentResponse;
+        checkContinuePurchase(responses);
+        return responses;
     }
 
     private PurchaseResponse calcApplyPromotionQuantity (Product product, Promotion promotion, int quantity) {
@@ -106,6 +108,7 @@ public class PurchaseService {
         }
         if (leftQuantity >= promotion.getBuyQuantity()) {
             if (getAnotherFreeQuantity(product, quantity, totalPromotionQuantity - leftQuantity)) {
+                quantity += (totalPromotionQuantity - leftQuantity);
                 freeQuantity += (totalPromotionQuantity - leftQuantity);
             }
             return new PurchaseResponse(product, quantity, freeQuantity, 0);
@@ -122,9 +125,13 @@ public class PurchaseService {
         return false;
     }
 
-    private void checkContinuePurchase(PurchaseResponse response) {
-        if (response.getNotApplyPromotionQuantity() > 0
-                && !InputView.haveToNoPromotion(response.getProduct(), response.getNotApplyPromotionQuantity())) {
+    private void checkContinuePurchase(List<PurchaseResponse> responses) {
+        int noPromotionQuantity = 0;
+        for (PurchaseResponse response : responses) {
+            noPromotionQuantity += response.getNotApplyPromotionQuantity();
+        }
+        if (noPromotionQuantity > 0
+                && !InputView.haveToNoPromotion(responses.getFirst().getProduct(), noPromotionQuantity)) {
             throw new RuntimeException("현재 선택하신 상품의 구매를 취소했습니다. 결제를 중단합니다.");
         }
     }
