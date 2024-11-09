@@ -1,7 +1,6 @@
 package store;
 
 import java.util.List;
-import java.util.function.Supplier;
 import store.controller.PurchaseController;
 import store.model.dto.response.PaymentFreeResponse;
 import store.model.dto.response.PaymentPriceResponse;
@@ -10,6 +9,7 @@ import store.model.dto.response.PaymentProductResponse;
 import store.model.dto.response.PurchaseResponse;
 import store.view.InputView;
 import store.view.OutputView;
+import util.RecursiveUtils;
 
 public class Application {
 
@@ -29,7 +29,7 @@ public class Application {
 
     private static Boolean progressConvenienceStore() {
         OutputView.printProducts();
-        return executeUntilNoException(() -> {
+        return RecursiveUtils.executeUntilNoException(() -> {
             List<PurchaseRequest> requests = progressPurchase();
             List<PurchaseResponse> responses = purchaseController.progressPayment(requests);
             List<PaymentProductResponse> paymentProductResponses = purchaseController.generatePaymentProductResponses(responses);
@@ -41,20 +41,10 @@ public class Application {
     }
 
     private static List<PurchaseRequest> progressPurchase() {
-        return executeUntilNoException(() -> {
+        return RecursiveUtils.executeUntilNoException(() -> {
             String input = InputView.printRequestPurchaseMessage();
             purchaseController.validatePurchaseRequest(input);
             return purchaseController.getPurchaseRequests(input);
         });
-    }
-
-    private static <T> T executeUntilNoException(Supplier<T> supplier) {
-        while (true) {
-            try {
-                return supplier.get();
-            } catch (Exception exception) {
-                System.out.println(exception.getMessage());
-            }
-        }
     }
 }
