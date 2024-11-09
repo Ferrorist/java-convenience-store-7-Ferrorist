@@ -1,5 +1,9 @@
 package store.model;
 
+import camp.nextstep.edu.missionutils.DateTimes;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 public class Promotion {
@@ -7,15 +11,15 @@ public class Promotion {
     private int buyQuantity;
     private int freeQuantity;
 
-    private String startDate;
-    private String endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
 
     public Promotion(String name, int buyQuantity, int freeQuantity, String startDate, String endDate) {
         this.name = name;
         this.buyQuantity = buyQuantity;
         this.freeQuantity = freeQuantity;
-        this.startDate = startDate;
-        this.endDate = endDate;
+        this.startDate = LocalDate.parse(startDate, DateTimeFormatter.ISO_DATE);
+        this.endDate = LocalDate.parse(endDate, DateTimeFormatter.ISO_DATE);
     }
 
     public String getName() {
@@ -30,12 +34,11 @@ public class Promotion {
         return freeQuantity;
     }
 
-    public String getStartDate() {
-        return startDate;
+    public boolean checkPeriod(LocalDateTime date) {
+        return checkPeriod(date.toLocalDate());
     }
-
-    public String getEndDate() {
-        return endDate;
+    public boolean checkPeriod(LocalDate date) {
+        return date.compareTo(startDate) >= 0 && endDate.compareTo(date) >= 0;
     }
 
     @Override
