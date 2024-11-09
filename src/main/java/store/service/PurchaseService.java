@@ -1,5 +1,6 @@
 package store.service;
 
+import camp.nextstep.edu.missionutils.DateTimes;
 import java.util.*;
 import store.enums.ErrorCode;
 import store.model.Product;
@@ -64,7 +65,7 @@ public class PurchaseService {
 
     public List<PurchaseResponse> 이름뭘로짓지(List<Product> products, PurchaseRequest request) {
         Promotion productPromotion = products.getFirst().getProductPromotion();
-        if (productPromotion == null) {
+        if (productPromotion == null || !productPromotion.checkPeriod(DateTimes.now())) {
             return List.of(new PurchaseResponse(products.getFirst(), request.getQuantity(), 0, 0));
         }
 
