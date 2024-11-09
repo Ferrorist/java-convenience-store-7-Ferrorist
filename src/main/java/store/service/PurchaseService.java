@@ -57,13 +57,13 @@ public class PurchaseService {
         for (PurchaseRequest request : requests) {
             validateRequestStocks(request);
             List<Product> products = getSortedProducts(request.getProductName());
-            responses.addAll(이름뭘로짓지(products, request));
+            responses.addAll(generatePurchaseResponse(products, request));
         }
         checkContinuePurchase(responses);
         return responses;
     }
 
-    public List<PurchaseResponse> 이름뭘로짓지(List<Product> products, PurchaseRequest request) {
+    private List<PurchaseResponse> generatePurchaseResponse(List<Product> products, PurchaseRequest request) {
         Promotion productPromotion = products.getFirst().getProductPromotion();
         if (productPromotion == null || !productPromotion.checkPeriod(DateTimes.now())) {
             return List.of(new PurchaseResponse(products.getFirst(), request.getQuantity(), 0, 0));
@@ -72,7 +72,7 @@ public class PurchaseService {
         return getPromotionPurchaseResponses(products, request);
     }
 
-    public List<PurchaseResponse> getPromotionPurchaseResponses(List<Product> products, PurchaseRequest request) {
+    private List<PurchaseResponse> getPromotionPurchaseResponses(List<Product> products, PurchaseRequest request) {
         Promotion promotion = products.getFirst().getProductPromotion();
         List<PurchaseResponse> responses = new ArrayList<>();
         int acceptPromotionQuantity = Math.min(products.getFirst().getQuantity(), request.getQuantity());
@@ -85,7 +85,7 @@ public class PurchaseService {
         return responses;
     }
 
-    public PurchaseResponse generatePromotionPurchaseResponse(Product product, Promotion promotion, int quantity) {
+    private PurchaseResponse generatePromotionPurchaseResponse(Product product, Promotion promotion, int quantity) {
         int promotionQuantity = promotion.getBuyQuantity() + promotion.getFreeQuantity();
         int ApplyPromotionCount = quantity / promotionQuantity;
         int leftQuantity = quantity - ApplyPromotionCount * promotionQuantity;
