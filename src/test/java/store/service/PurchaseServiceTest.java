@@ -13,6 +13,7 @@ import store.model.dto.response.PurchaseResponse;
 public class PurchaseServiceTest {
 
     private static PurchaseService purchaseService;
+
     @Test
     void validatePurchaseRequestTrueTest() {
         Assertions.assertTrue(purchaseService.validatePurchaseRequest("[사이다-3], [물-1]"));
@@ -51,15 +52,8 @@ public class PurchaseServiceTest {
     void progressPaymentTest() {
         Assertions.assertDoesNotThrow(() -> {
             List<PurchaseRequest> requests = purchaseService.getPurchaseRequests("[사이다-3]");
-            purchaseService.progressPayment(requests);
+            purchaseService.generatePurchaseResponses(requests);
         });
-    }
-
-    @Test
-    void PaymentResponseTest() {
-        List<PurchaseRequest> requests = purchaseService.getPurchaseRequests("[사이다-3]");
-        List<PurchaseResponse> responses = purchaseService.progressPayment(requests);
-        Assertions.assertTrue(purchaseService.generatePaymentPriceResponse(responses) instanceof PaymentPriceResponse);
     }
 
     @BeforeAll

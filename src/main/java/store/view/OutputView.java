@@ -1,12 +1,11 @@
 package store.view;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import store.model.Product;
 import store.model.dto.response.PaymentFreeResponse;
 import store.model.dto.response.PaymentPriceResponse;
 import store.model.dto.response.PaymentProductResponse;
-import store.service.ProductManager;
+import store.service.manager.ProductManager;
 import util.StringUtils;
 
 public class OutputView {

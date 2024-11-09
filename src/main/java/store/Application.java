@@ -1,6 +1,7 @@
 package store;
 
 import java.util.List;
+import store.controller.PaymentController;
 import store.controller.PurchaseController;
 import store.model.dto.response.PaymentFreeResponse;
 import store.model.dto.response.PaymentPriceResponse;
@@ -14,21 +15,22 @@ import util.RecursiveUtils;
 public class Application {
 
     private static final PurchaseController purchaseController = new PurchaseController();
+    private static final PaymentController paymentController = new PaymentController();
 
     public static void main(String[] args) {
         startProgram();
-        진행();
+        processConvenienceStore();
     }
 
     private static void startProgram() {
         OutputView.printWelcomeMessage();
     }
 
-    private static void 진행() {
+    private static void processConvenienceStore() {
         boolean continuedProcess;
         do {
             Object selectProductsResult = selectProducts();
-            if (!(selectProductsResult instanceof Boolean)) {
+            if (selectProductsResult instanceof List) {
                 progressPayment((List<PurchaseResponse>) selectProductsResult);
             }
             continuedProcess = InputView.continueToPurchase();
@@ -36,9 +38,9 @@ public class Application {
     }
 
     private static void progressPayment(List<PurchaseResponse> responses) {
-        List<PaymentProductResponse> paymentProductResponses = purchaseController.generatePaymentProductResponses(responses);
-        List<PaymentFreeResponse> paymentFreeResponses = purchaseController.generatePaymentFreeResponses(responses);
-        PaymentPriceResponse paymentPriceResponse = purchaseController.generatePaymentPriceResponse(responses);
+        List<PaymentProductResponse> paymentProductResponses = paymentController.generatePaymentProductResponses(responses);
+        List<PaymentFreeResponse> paymentFreeResponses = paymentController.generatePaymentFreeResponses(responses);
+        PaymentPriceResponse paymentPriceResponse = paymentController.generatePaymentPriceResponse(responses);
         OutputView.printPaymentResult(paymentProductResponses, paymentFreeResponses, paymentPriceResponse);
     }
 

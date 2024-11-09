@@ -5,7 +5,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import store.model.Product;
 import store.model.Promotion;
-import store.service.PromotionManager;
+import store.service.manager.PromotionManager;
 
 public class ProductFactoryTest {
 

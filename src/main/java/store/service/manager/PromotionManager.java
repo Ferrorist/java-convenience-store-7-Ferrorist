@@ -1,4 +1,4 @@
-package store.service;
+package store.service.manager;
 
 import java.util.ArrayList;
 import java.util.HashMap;

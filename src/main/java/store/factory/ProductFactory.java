@@ -2,7 +2,7 @@ package store.factory;
 
 import store.model.Product;
 import store.model.Promotion;
-import store.service.PromotionManager;
+import store.service.manager.PromotionManager;
 import util.StringUtils;
 
 public class ProductFactory {
