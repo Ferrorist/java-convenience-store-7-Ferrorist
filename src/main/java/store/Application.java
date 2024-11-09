@@ -17,14 +17,17 @@ public class Application {
 
     public static void main(String[] args) {
         startProgram();
-        progressConvenienceStore();
+        boolean continuedProcess;
+        do {
+            continuedProcess = progressConvenienceStore();
+        } while (continuedProcess);
     }
 
     private static void startProgram() {
         OutputView.printWelcomeMessage();
     }
 
-    private static Void progressConvenienceStore() {
+    private static Boolean progressConvenienceStore() {
         OutputView.printProducts();
         return executeUntilNoException(() -> {
             List<PurchaseRequest> requests = progressPurchase();
@@ -33,7 +36,7 @@ public class Application {
             List<PaymentFreeResponse> paymentFreeResponses = purchaseController.generatePaymentFreeResponses(responses);
             PaymentPriceResponse paymentPriceResponse = purchaseController.generatePaymentPriceResponse(responses);
             OutputView.printPaymentResult(paymentProductResponses, paymentFreeResponses, paymentPriceResponse);
-            return null;
+            return InputView.continueToPurchase();
         });
     }
 
@@ -53,12 +56,5 @@ public class Application {
                 System.out.println(exception.getMessage());
             }
         }
-    }
-
-    private static void progressPayment(List<PurchaseRequest> requests) {
-        executeUntilNoException(() -> {
-
-            return null;
-        });
     }
 }
