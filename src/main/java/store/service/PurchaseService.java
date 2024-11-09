@@ -59,15 +59,61 @@ public class PurchaseService {
         return new PurchaseRequest(inputValue[0], requestQuantity);
     }
 
-    public List<PurchaseResponse> progressPayment(List<PurchaseRequest> requests) throws RuntimeException {
+    public List<PurchaseResponse> generatePurchaseResponses(List<PurchaseRequest> requests) throws IllegalArgumentException {
         List<PurchaseResponse> responses = new ArrayList<>();
         for (PurchaseRequest request : requests) {
             validateRequestStocks(request);
             List<Product> products = getSortedProducts(request.getProductName());
-            responses.addAll(generatePurchaseResponse(products, request.getQuantity()));
+            responses.addAll(이름뭘로짓지(products, request));
+        }
+        checkContinuePurchase(responses);
+        return responses;
+    }
+
+    public List<PurchaseResponse> 이름뭘로짓지(List<Product> products, PurchaseRequest request) {
+        Promotion productPromotion = products.getFirst().getProductPromotion();
+        if (productPromotion == null) {
+            return List.of(new PurchaseResponse(products.getFirst(), request.getQuantity(), 0, 0));
+        }
+
+        return getPromotionPurchaseResponses(products, request);
+    }
+
+    public List<PurchaseResponse> getPromotionPurchaseResponses(List<Product> products, PurchaseRequest request) {
+        Promotion promotion = products.getFirst().getProductPromotion();
+        List<PurchaseResponse> responses = new ArrayList<>();
+        int acceptPromotionQuantity = Math.min(products.getFirst().getQuantity(), request.getQuantity());
+        responses.add(generatePromotionPurchaseResponse(products.getFirst(), promotion, acceptPromotionQuantity));
+        if (request.getQuantity() > acceptPromotionQuantity) {
+            int notApplyPromotionQuantity = request.getQuantity() - acceptPromotionQuantity;
+            responses.add(new PurchaseResponse(products.get(1), notApplyPromotionQuantity, 0, notApplyPromotionQuantity));
         }
 
         return responses;
+    }
+
+    public PurchaseResponse generatePromotionPurchaseResponse(Product product, Promotion promotion, int quantity) {
+        int promotionQuantity = promotion.getBuyQuantity() + promotion.getFreeQuantity();
+        int ApplyPromotionCount = quantity / promotionQuantity;
+        int leftQuantity = quantity - ApplyPromotionCount * promotionQuantity;
+        int freeQuantity = ApplyPromotionCount * promotion.getFreeQuantity();
+
+        if (leftQuantity == 0) {
+            return new PurchaseResponse(product, quantity, freeQuantity, 0);
+        }
+
+        return calcQuantityToGenerateResponse(product, promotion, quantity, leftQuantity, promotionQuantity, freeQuantity);
+    }
+
+    private PurchaseResponse calcQuantityToGenerateResponse(Product product, Promotion promotion, int quantity, int leftQuantity, int promotionQuantity, int freeQuantity) {
+        if (leftQuantity >= promotion.getBuyQuantity()) {
+            if (getAnotherFreeQuantity(product, quantity, promotionQuantity - leftQuantity)) {
+                quantity += (promotionQuantity - leftQuantity);
+                freeQuantity += (promotionQuantity - leftQuantity);
+            }
+            return new PurchaseResponse(product, quantity, freeQuantity, 0);
+        }
+        return new PurchaseResponse(product, quantity, freeQuantity, leftQuantity);
     }
 
     private void validateRequestStocks(PurchaseRequest request) {
@@ -83,44 +129,6 @@ public class PurchaseService {
         List<Product> products = productManager.getProductByName(productName);
         Collections.sort(products);
         return products;
-    }
-
-    private List<PurchaseResponse> generatePurchaseResponse(List<Product> products, int requestQuantity) throws RuntimeException {
-        Promotion productPromotion = products.getFirst().getProductPromotion();
-        if (productPromotion == null) {
-            return List.of(new PurchaseResponse(products.getFirst(), requestQuantity, 0, 0));
-        }
-        List<PurchaseResponse> responses = new ArrayList<>();
-        int applyPromotionQuantity = Math.min(products.getFirst().getQuantity(), requestQuantity);
-        PurchaseResponse currentResponse = calcApplyPromotionQuantity(products.getFirst(), productPromotion, applyPromotionQuantity);
-        responses.add(currentResponse);
-        if (requestQuantity != applyPromotionQuantity) {
-            int notApplyPromotionQuantity = requestQuantity - applyPromotionQuantity;
-            PurchaseResponse noPromotionResponse = new PurchaseResponse(products.get(1), notApplyPromotionQuantity, 0, notApplyPromotionQuantity);
-            responses.add(noPromotionResponse);
-        }
-
-        checkContinuePurchase(responses);
-        return responses;
-    }
-
-    private PurchaseResponse calcApplyPromotionQuantity (Product product, Promotion promotion, int quantity) {
-        int totalPromotionQuantity = promotion.getBuyQuantity() + promotion.getFreeQuantity();
-        int ApplyPromotionCount = quantity / totalPromotionQuantity;
-        int leftQuantity = quantity - ApplyPromotionCount * totalPromotionQuantity;
-        int freeQuantity = ApplyPromotionCount * promotion.getFreeQuantity();
-
-        if (leftQuantity == 0) {
-            return new PurchaseResponse(product, quantity, freeQuantity, 0);
-        }
-        if (leftQuantity >= promotion.getBuyQuantity()) {
-            if (getAnotherFreeQuantity(product, quantity, totalPromotionQuantity - leftQuantity)) {
-                quantity += (totalPromotionQuantity - leftQuantity);
-                freeQuantity += (totalPromotionQuantity - leftQuantity);
-            }
-            return new PurchaseResponse(product, quantity, freeQuantity, 0);
-        }
-        return new PurchaseResponse(product, quantity, freeQuantity, leftQuantity);
     }
 
     private boolean getAnotherFreeQuantity(Product product, int requestQuantity, int leftQuantity) {
@@ -142,6 +150,8 @@ public class PurchaseService {
             throw new RuntimeException("현재 선택하신 상품의 구매를 취소했습니다. 결제를 중단합니다.");
         }
     }
+
+    /////////////////////////
 
     public PaymentPriceResponse generatePaymentPriceResponse(final List<PurchaseResponse> responses) {
         PaymentPriceResponse paymentPriceResponse = new PaymentPriceResponse();
@@ -228,4 +238,6 @@ public class PurchaseService {
     private PaymentFreeResponse generatePaymentFreeResponse(Entry<String, Integer> entry) {
         return new PaymentFreeResponse(entry.getKey(), entry.getValue());
     }
+
+
 }

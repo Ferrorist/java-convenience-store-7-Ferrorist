@@ -19,8 +19,13 @@ public class PurchaseController {
         return purchaseService.getPurchaseRequests(input);
     }
 
-    public List<PurchaseResponse> progressPayment(List<PurchaseRequest> requests) throws RuntimeException {
-        return purchaseService.progressPayment(requests);
+    public Object generatePurchaseResponses(List<PurchaseRequest> requests) throws RuntimeException {
+        try {
+            return purchaseService.generatePurchaseResponses(requests);
+        } catch (RuntimeException exception) {
+            System.out.println(exception.getMessage());
+            return Boolean.FALSE;
+        }
     }
 
     public List<PaymentProductResponse> generatePaymentProductResponses(final List<PurchaseResponse> responses) {
