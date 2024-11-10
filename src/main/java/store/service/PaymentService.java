@@ -84,11 +84,7 @@ public class PaymentService {
     }
 
     public List<PaymentFreeResponse> generatePaymentFreeResponses(List<PurchaseResponse> responses) {
-        Map<String, Integer> purchaseResult = new HashMap<>();
-        for (PurchaseResponse response : responses) {
-            String productName = response.getProduct().getName();
-            purchaseResult.put(productName, purchaseResult.getOrDefault(productName, 0) + response.getFreeQuantity());
-        }
+        Map<String, Integer> purchaseResult = setPurchaseResults(responses);
         List<PaymentFreeResponse> freeResponses = new ArrayList<>();
         for (Map.Entry<String, Integer> entry : purchaseResult.entrySet()) {
             if(entry.getValue() > 0) {
@@ -96,6 +92,16 @@ public class PaymentService {
             }
         }
         return freeResponses;
+    }
+
+    private Map<String, Integer> setPurchaseResults(List<PurchaseResponse> responses) {
+        Map<String, Integer> purchaseResult = new HashMap<>();
+        for (PurchaseResponse response : responses) {
+            String productName = response.getProduct().getName();
+            int freeQuantity = response.getFreeQuantity();
+            purchaseResult.put(productName, purchaseResult.getOrDefault(productName, 0) + freeQuantity);
+        }
+        return purchaseResult;
     }
 
     private PaymentFreeResponse generatePaymentFreeResponse(Entry<String, Integer> entry) {
