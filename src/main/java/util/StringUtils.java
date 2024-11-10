@@ -1,5 +1,6 @@
 package util;
 
+import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -38,6 +39,10 @@ public class StringUtils {
 
     public static boolean checkSpecialChar(char input) {
         return Pattern.matches(SPECIAL_CHAR_REGEX, Character.toString(input));
+    }
+
+    public static String convertToDecimalFormat(BigDecimal amount) {
+        return convertToDecimalFormat(amount.intValue());
     }
 
     public static String convertToDecimalFormat(int amount) {

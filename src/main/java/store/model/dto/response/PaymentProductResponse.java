@@ -1,5 +1,7 @@
 package store.model.dto.response;
 
+import util.StringUtils;
+
 public class PaymentProductResponse {
     private String productName;
     private int quantity;
@@ -29,6 +31,10 @@ public class PaymentProductResponse {
 
     public int getTotalPrice() {
         return totalPrice;
+    }
+
+    public String getTotalPriceString() {
+        return StringUtils.convertToDecimalFormat(totalPrice);
     }
 
     public void setTotalPrice(int totalPrice) {

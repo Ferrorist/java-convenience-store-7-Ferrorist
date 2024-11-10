@@ -1,6 +1,7 @@
 package store.model;
 
 import java.util.Objects;
+import util.StringUtils;
 
 public class Product implements Comparable<Product> {
     private final String name;
@@ -22,6 +23,10 @@ public class Product implements Comparable<Product> {
 
     public int getPrice() {
         return price;
+    }
+
+    public String getPriceString() {
+        return StringUtils.convertToDecimalFormat(price);
     }
 
     public int getQuantity() {

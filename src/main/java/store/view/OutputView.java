@@ -23,7 +23,7 @@ public class OutputView {
         for (Product product : ProductManager.getInstance().getProducts()) {
             stringBuilder.append("- ");
             stringBuilder.append(product.getName()).append(" ");
-            stringBuilder.append(StringUtils.convertToDecimalFormat(product.getPrice())).append("원 ");
+            stringBuilder.append(product.getPriceString()).append("원 ");
             stringBuilder.append(product.getQuantitytoString()).append(" ");
             stringBuilder.append(product.getProductPromotionName()).append("\n");
         }
@@ -45,7 +45,7 @@ public class OutputView {
         for (PaymentProductResponse response : productResponses) {
             stringBuilder.append(response.getProductName()).append("\t\t");
             stringBuilder.append(response.getQuantity()).append("\t");
-            stringBuilder.append(StringUtils.convertToDecimalFormat(response.getTotalPrice())).append("\n");
+            stringBuilder.append(response.getTotalPriceString()).append("\n");
         }
     }
 
@@ -60,11 +60,11 @@ public class OutputView {
     private static void printPaymentPriceResponse(PaymentPriceResponse response, StringBuilder stringBuilder) {
         stringBuilder.append("==============================").append("\n");
         stringBuilder.append("총구매액\t\t").append(response.getPurchaseQuantity()).append("\t");
-        stringBuilder.append(StringUtils.convertToDecimalFormat(response.getPurchaseAmountIntValue())).append("\n");
+        stringBuilder.append(response.getPurchaseAmountString()).append("\n");
         stringBuilder.append("행사할인\t\t\t").append("-");
-        stringBuilder.append(StringUtils.convertToDecimalFormat(response.getApplyPromotionIntValue())).append("\n");
+        stringBuilder.append(response.getApplyPromotionString()).append("\n");
         stringBuilder.append("멤버십할인\t\t\t").append("-");
-        stringBuilder.append(StringUtils.convertToDecimalFormat(response.getApplyMemberShipIntValue())).append("\n");
-        stringBuilder.append("내실돈\t\t\t").append(StringUtils.convertToDecimalFormat(response.getActualAmountIntValue())).append("\n");
+        stringBuilder.append(response.getApplyMemberShipString()).append("\n");
+        stringBuilder.append("내실돈\t\t\t").append(response.getActualAmountString()).append("\n");
     }
 }

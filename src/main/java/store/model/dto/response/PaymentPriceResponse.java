@@ -1,6 +1,7 @@
 package store.model.dto.response;
 
 import java.math.BigDecimal;
+import util.StringUtils;
 
 public class PaymentPriceResponse {
     private BigDecimal purchaseAmount;
@@ -63,6 +64,22 @@ public class PaymentPriceResponse {
 
     public int getActualAmountIntValue() {
         return actualAmount.intValue();
+    }
+
+    public String getPurchaseAmountString() {
+        return StringUtils.convertToDecimalFormat(purchaseAmount);
+    }
+
+    public String getApplyPromotionString() {
+        return StringUtils.convertToDecimalFormat(applyPromotion);
+    }
+
+    public String getApplyMemberShipString() {
+        return StringUtils.convertToDecimalFormat(applyMembership);
+    }
+
+    public String getActualAmountString() {
+        return StringUtils.convertToDecimalFormat(actualAmount);
     }
 
     public void setPurchaseAmount(int amount) {
