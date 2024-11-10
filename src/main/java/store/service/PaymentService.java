@@ -53,9 +53,7 @@ public class PaymentService {
         BigDecimal memberShip = BigDecimal.ZERO;
         if (InputView.ApplyMemberShip()) {
             int values = (int)(response.getPurchaseAmountIntValue() * 0.3);
-            values = Math.min(values, 8000);
-            values = values / 1000 * 1000;
-            memberShip = new BigDecimal(values);
+            memberShip = new BigDecimal(Math.min(values / 1000 * 1000, 8000));
         }
         return memberShip;
     }
